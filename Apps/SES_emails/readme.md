@@ -1,6 +1,9 @@
 # Emails - Delhivery 
 
-This app will help in maintaining the list of emails blocked by ses to prevent further bounce emails   
+This app will help in maintaining the list of emails blocked by ses to prevent further bounce emails 
+  the app provides two api one to push the Bounce response from SNS to our DB & one to verify blocked status of emails 
+  
+   
 # Getting Started
 
 ## Installation
