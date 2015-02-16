@@ -2,11 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from models import SuppressedList
 from rest_framework import status
-from rest_framework.throttling import UserRateThrottle ,AnonRateThrottle
-import json
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from utils import VerifyEmails
 
 
-class CheckEmailStatusAPI(APIView):
+class CheckEmailStatusAPI(APIView, VerifyEmails):
     """
         This API provides rest implementation to check the status of email blocked by ses
         {"emails": ["examplesr@xyz.in"]}
@@ -19,8 +19,7 @@ class CheckEmailStatusAPI(APIView):
     """
     http_method_names = ['post']
     model = SuppressedList
-    throttle_classes = (UserRateThrottle,AnonRateThrottle)
-
+    throttle_classes = (UserRateThrottle, AnonRateThrottle)
 
     def post(self, request, *args, **kwargs):
         """
@@ -41,49 +40,7 @@ class CheckEmailStatusAPI(APIView):
             emails = data.get('emails', '')
             obj = self.get_emails_status(emails=emails)
             return Response({'results': obj, 'success': True})
-        return Response({'success': False,'error':True,'message':'invalid data', 'data': data})
-
-    def _to_set(self,emails=[]):
-        email_set = set()
-        for email in list(emails):
-            email_set.add(email[0])
-        return email_set
-
-
-    def non_blocked_emails(self,emails=[]):
-        """
-            makes a query to system and returns the list if non blocked emails
-        :param email list:
-        :return:
-        """
-        to_return = []
-        set().difference()
-        blocked_emails =  self.model.objects.filter(email__in=emails, blocked=True).values_list('email')
-        if blocked_emails:
-            emails_set = self._to_set(blocked_emails)
-            return set(emails).difference(emails_set)
-        return []
-
-    def get_emails_status(self, emails=[]):
-        """
-            makes a query to system and checks the validity of SES_emails
-        :param email:
-        :return:
-        """
-        to_return = []
-        email_objs = self.model.objects.filter(email__in=emails)
-        for obj in email_objs:
-            to_return.append(obj.json_response())
-        return to_return
-
-    def get_email_obj(self, email):
-        """
-            makes a query to system and checks the validity of SES_emails
-        :param email:
-        :return:
-        """
-        email_obj = self.model.objects.get(email=email)
-        return email_obj.json_response()
+        return Response({'success': False, 'error': True, 'message': 'invalid data', 'data': data})
 
 
 class AddEmailToListAPI(APIView):
@@ -143,9 +100,10 @@ class AddEmailToListAPI(APIView):
                 if bounced_recipients:
                     for recipient in bounced_recipients:
                         email = recipient.get('emailAddress', '')
-                        bounced_email, created = SuppressedList.objects.get_or_create(email=email, blocked_date=timestamp)
+                        bounced_email, created = SuppressedList.objects.get_or_create(email=email,
+                                                                                      blocked_date=timestamp)
                         bounced_email.save()
-                    return Response({'success': True, 'error': False}, status = status.HTTP_201_CREATED)
+                    return Response({'success': True, 'error': False}, status=status.HTTP_201_CREATED)
             else:
                 to_return = {'error': True, 'msg': 'invalid data', 'data': data}
                 return Response(to_return)

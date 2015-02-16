@@ -41,8 +41,8 @@ class SuppressedList(models.Model):
     """
         This list maintains the SES_emails which are blocked and needs to verified.
     """
-    email = models.EmailField(blank=False, null=False, verbose_name="supressed_email")
-    blocked = models.BooleanField(default=True)
+    email = models.EmailField(blank=False, null=False, verbose_name="supressed_email", db_index=True)
+    blocked = models.BooleanField(default=True, db_index=True)
     blocked_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
