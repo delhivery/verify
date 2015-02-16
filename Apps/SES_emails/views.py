@@ -4,6 +4,7 @@ from models import SuppressedList
 from rest_framework import status
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from utils import VerifyEmails
+from rest_framework import permissions
 
 
 class CheckEmailStatusAPI(APIView, VerifyEmails):
@@ -82,6 +83,7 @@ class AddEmailToListAPI(APIView):
         }
     """
     http_method_names = ['post']
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         """
