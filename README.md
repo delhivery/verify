@@ -4,7 +4,7 @@ This app will help in maintaining the list of emails blocked by AWS SNS to preve
 ##Getting Started
 
 ## Installation
-Simply add this application inside your codebase and use it
+    pip install http://pypi.delhivery.com.s3.amazonaws.com/ses_emails-0.2.tar.gz
 
 ###OR
     git clone https://github.com/delhivery/verify.git
@@ -17,10 +17,15 @@ Simply add this application inside your codebase and use it
     INSTALLED_APPS = (
         'XXXXXXXXX',
         'XXXXXXXXX',
-        'emails',
+        'ses_emails',
         'rest_framework',
     )
 
 ### Urls.py
     Add the following line in your main urls.py file 
-    url(r'^email/', include('emails.urls')),
+    url(r'^ses_email/', include('ses_emails.urls')),
+    
+    
+###Inside your email send function code
+     # VerifyEmails will filter the list and will exclude the blocked emails from list
+    to = VerifyEmails().verify(emails=to)

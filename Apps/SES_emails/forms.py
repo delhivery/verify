@@ -3,7 +3,7 @@ from django import forms
 
 class VerifyForm(forms.Form):
     """
-        Form to check the validity of SES_emails.
+        Form to check the validity of ses_emails.
     """
     email = forms.EmailField(required=True)
     format = forms.ChoiceField(choices=(('html','html'),('json','json')))

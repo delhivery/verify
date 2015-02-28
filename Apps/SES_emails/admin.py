@@ -1,10 +1,15 @@
 from django.contrib import admin
+from models import SuppressedList, AWSSubscription
 
-from models import SuppressedList
 
 class SuppressedListAdmin(admin.ModelAdmin):
-    list_display = ['email','blocked']
+    list_display = ['email', 'blocked']
     pass
 
 
-admin.site.register(SuppressedList,SuppressedListAdmin)
+class AWSSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ['link', 'created_at']
+    pass
+
+admin.site.register(SuppressedList, SuppressedListAdmin)
+admin.site.register(AWSSubscription, AWSSubscriptionAdmin)
