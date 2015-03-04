@@ -31,7 +31,7 @@ class VerifyEmails(object):
         if blocked_emails:
             emails_set = self._to_set(blocked_emails)
             return set(emails).difference(emails_set)
-        return []
+        return emails
 
     def get_emails_status(self, emails=[]):
         """
@@ -61,6 +61,7 @@ class VerifyEmails(object):
         except ValueError as e:
             raise Exception('Some Error had occurred' + e)
 
+        return emails
 from rest_framework.parsers import JSONParser
 from rest_framework import renderers
 from django.conf import settings

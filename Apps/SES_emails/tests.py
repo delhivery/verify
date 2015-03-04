@@ -4,6 +4,8 @@ from rest_framework.test import APITestCase
 from models import SuppressedList
 from django.test import TestCase
 from utils import VerifyEmails
+
+
 class AddEmailTests(APITestCase):
     def setUp(self):
         # Every test needs access to the request factory.
@@ -12,8 +14,8 @@ class AddEmailTests(APITestCase):
 
 
     # def test_adding_new_email(self):
-    #     """
-    #         Ensure we can create a email entry in Suppressed List
+    # """
+    # Ensure we can create a email entry in Suppressed List
     #     """
     #     url = reverse('add_email')
     #     data = {
@@ -75,11 +77,12 @@ class AddEmailTests(APITestCase):
 
     def test_check_email_list(self):
         url = reverse('check_email')
-        data = {"emails": ["shashank.shekhar@vgmail.in","aamir@aamir.com"],"response":'list'}
+        data = {"emails": ["shashank.shekhar@vgmail.in", "aamir@aamir.com"], "response": 'list'}
         response_data = set(["aamir@aamir.com"])
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, response_data)
+
 
 class CheckAPI(TestCase):
     def setUp(self):
@@ -92,12 +95,25 @@ class CheckAPI(TestCase):
 
     def test_Utils_api(self):
         data = set(['aamir@aamir.com'])
-        emails = ['aamir@aamir.com','shashank.shekhar@vgmail.in']
+        emails = ['aamir@aamir.com', 'shashank.shekhar@vgmail.in']
         response = VerifyEmails().verify(emails)
         self.assertEqual(response, data)
 
     def test_fail_api(self):
         data = set(['shashank.shekhar@vgmail.in'])
-        emails = ['aamir@aamir.com','shashank.shekhar@vgmail.in']
+        emails = ['aamir@aamir.com', 'shashank.shekhar@vgmail.in']
         response = VerifyEmails().verify(emails)
         self.assertNotEquals(response, data)
+
+
+class CheckVerifyEmails(TestCase):
+    def test__VerifyEmails(self):
+        emails = ['xyz@xyz.com', 'abc@abc.com']
+        emails = VerifyEmails().verify(emails)
+        self.assertEquals(emails, ['xyz@xyz.com', 'abc@abc.com'])
+
+
+    def test__Empty_VerifyEmails(self):
+        emails = ['xyz@xyz.com', 'abc@abc.com']
+        emails = VerifyEmails().verify(emails)
+        self.assertNotEquals(emails, [])
